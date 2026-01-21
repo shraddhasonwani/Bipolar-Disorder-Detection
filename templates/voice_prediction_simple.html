@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style-enhanced.css') }}">
+    <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .main-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            animation: slideInUp 0.6s ease-out;
+        }
+        .record-pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto max-w-2xl p-8">
+        <div class="main-card bg-white rounded-lg shadow-2xl p-8">
+            <div class="text-center mb-6">
+                <i class="fas fa-microphone text-6xl mb-4 animated-gradient-text"></i>
+                <h1 class="text-3xl font-bold shimmer">Voice Analysis</h1>
+                <p class="text-gray-600">Record for at least 30 seconds</p>
+            </div>
+
+            <div class="text-center mb-6">
+                <p id="status" class="text-lg font-semibold text-gray-700">Ready to record</p>
+                <p id="timer" class="text-2xl font-bold text-blue-600 mt-2">00:00</p>
+            </div>
+
+            <div class="mb-6 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                <p class="font-bold mb-2 text-gray-800">Speaking Prompt:</p>
+                <p id="prompt" class="text-gray-700 italic mb-3">Loading...</p>
+                <button id="newPromptBtn" class="bg-indigo-500 hover:bg-indigo-600 text-white text-sm py-2 px-4 rounded-full">
+                    <i class="fas fa-redo mr-1"></i> New Prompt
+                </button>
+            </div>
+
+            <div class="mb-6">
+                <label class="text-sm font-semibold text-gray-700 mb-2 block">Live Captions:</label>
+                <textarea id="captions" class="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-sm" rows="4" readonly placeholder="Your speech will appear here..."></textarea>
+            </div>
+
+            <div class="flex justify-center gap-4 mb-6">
+                <button id="recordBtn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full ripple shadow-lg hover:shadow-xl">
+                    <i class="fas fa-microphone mr-2"></i> Record
+                </button>
+                <button id="stopBtn" class="bg-gray-400 text-white font-bold py-3 px-8 rounded-full shadow-lg" disabled>
+                    <i class="fas fa-stop mr-2"></i> Stop & Analyze
+                </button>
+            </div>
+
+            <div id="result" class="hidden mt-6 p-6 bg-blue-50 rounded-lg">
+                <h3 class="text-xl font-bold mb-4">Analysis Result</h3>
+                <div id="resultContent"></div>
+            </div>
+
+            <div id="loading" class="hidden text-center py-8">
+                <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                <p class="mt-4 text-gray-600">Analyzing...</p>
+            </div>
+
+            <div id="error" class="hidden mt-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded"></div>
+        </div>
+    </div>
+
+    <script>
+        let recorder, audioStream, startTime, timerInterval, recognition;
+        const MIN_DURATION = 30;
+
+        const recordBtn = document.getElementById('recordBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const status = document.getElementById('status');
+        const timer = document.getElementById('timer');
+        const result = document.getElementById('result');
+        const resultContent = document.getElementById('resultContent');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const prompt = document.getElementById('prompt');
+        const newPromptBtn = document.getElementById('newPromptBtn');
+        const captions = document.getElementById('captions');
+
+        const prompts = [
+            "Describe a typical day in your life from morning to evening. Include details about your routine, activities, meals, work or study, and how you spend your free time. Talk about what makes you feel energized or tired throughout the day.",
+            "Tell me about your childhood memories. What was your favorite place to visit? Who were the people closest to you? Describe some happy moments and challenges you faced growing up. How have those experiences shaped who you are today?",
+            "Discuss your thoughts on technology and social media. How has it changed the way we communicate? What are the positive and negative impacts you've observed? How do you personally use technology in your daily life?",
+            "Imagine planning your dream vacation. Where would you go and why? Describe the destination, activities you'd do, people you'd take with you, and what you hope to experience. What makes this place special to you?",
+            "Talk about your hobbies and interests. What activities bring you joy and relaxation? How did you discover these interests? Describe how you feel when you're engaged in these activities and why they're important to you.",
+            "Describe your relationships with family and friends. Who are the most important people in your life? Share some memorable experiences you've had together. How do these relationships influence your daily mood and decisions?",
+            "Discuss your career or educational goals. What are your aspirations for the future? What steps are you taking to achieve them? Talk about any challenges you face and how you plan to overcome them.",
+            "Share your thoughts on health and wellness. What does being healthy mean to you? Describe your exercise routine, eating habits, and sleep patterns. How do you manage stress and maintain your mental well-being?"
+        ];
+
+        function loadPrompt() {
+            const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+            prompt.textContent = randomPrompt;
+        }
+
+        // Speech Recognition Setup
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = (event) => {
+                let transcript = '';
+                for (let i = 0; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript + ' ';
+                }
+                captions.value = transcript;
+                captions.scrollTop = captions.scrollHeight;
+            };
+
+            recognition.onerror = (event) => {
+                console.log('Speech recognition error:', event.error);
+            };
+        }
+
+        newPromptBtn.onclick = loadPrompt;
+
+        recordBtn.onclick = async () => {
+            try {
+                audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                // Use RecordRTC to record as WAV
+                recorder = RecordRTC(audioStream, {
+                    type: 'audio',
+                    mimeType: 'audio/wav',
+                    recorderType: RecordRTC.StereoAudioRecorder,
+                    numberOfAudioChannels: 1,
+                    desiredSampRate: 16000
+                });
+                
+                recorder.startRecording();
+                
+                // Start speech recognition
+                if (recognition) {
+                    captions.value = '';
+                    recognition.start();
+                }
+                
+                startTime = Date.now();
+                
+                recordBtn.disabled = true;
+                stopBtn.disabled = false;
+                stopBtn.classList.remove('bg-gray-400');
+                stopBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                
+                status.textContent = 'Recording...';
+                status.classList.add('text-red-600');
+                
+                timerInterval = setInterval(() => {
+                    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                    const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
+                    const secs = (elapsed % 60).toString().padStart(2, '0');
+                    timer.textContent = `${mins}:${secs}`;
+                    
+                    if (elapsed >= MIN_DURATION) {
+                        timer.classList.add('text-green-600');
+                    }
+                }, 1000);
+                
+            } catch (err) {
+                showError('Microphone access denied!');
+            }
+        };
+
+        stopBtn.onclick = () => {
+            const elapsed = (Date.now() - startTime) / 1000;
+            if (elapsed < MIN_DURATION) {
+                alert(`Please record for at least ${MIN_DURATION} seconds`);
+                return;
+            }
+            
+            recorder.stopRecording(() => {
+                const audioBlob = recorder.getBlob();
+                audioStream.getTracks().forEach(track => track.stop());
+                clearInterval(timerInterval);
+                
+                // Stop speech recognition
+                if (recognition) {
+                    recognition.stop();
+                }
+                
+                recordBtn.disabled = false;
+                stopBtn.disabled = true;
+                status.textContent = 'Processing...';
+                
+                processAudio(audioBlob);
+            });
+        };
+
+        async function processAudio(audioBlob) {
+            result.classList.add('hidden');
+            error.classList.add('hidden');
+            loading.classList.remove('hidden');
+            
+            const formData = new FormData();
+            formData.append('audio', audioBlob, 'recording.wav');
+            
+            try {
+                const response = await fetch('/predict_audio', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                loading.classList.add('hidden');
+                
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+
+if (!data || typeof data !== 'object') {
+    showError("Invalid server response");
+    return;
+}
+
+                
+                showResult(data);
+                
+            } catch (err) {
+                loading.classList.add('hidden');
+                showError('Failed to process audio: ' + err.message);
+            }
+        }
+
+        function showResult(data) {
+
+    const symptoms = Array.isArray(data.symptoms) ? data.symptoms : [];
+    const recommendations = Array.isArray(data.recommendations) ? data.recommendations : [];
+
+    resultContent.innerHTML = `
+        <div class="space-y-4">
+            <div class="bg-white p-4 rounded-lg border-l-4 border-blue-600">
+                <h4 class="font-bold text-lg mb-2">Mood State: ${data.mood_state ?? 'N/A'}</h4>
+                <p class="text-gray-700"><strong>Emotion:</strong> ${data.emotion ?? 'N/A'}</p>
+                <p class="text-gray-700"><strong>Confidence:</strong> ${(data.confidence ?? 0).toFixed(1)}%</p>
+            </div>
+
+            <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                <h4 class="font-bold mb-2 text-yellow-800">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>Detected Symptoms:
+                </h4>
+                <ul class="list-disc list-inside space-y-1">
+                    ${
+                        symptoms.length
+                        ? symptoms.map(s => `<li class="text-gray-700">${s}</li>`).join('')
+                        : '<li class="text-gray-500">No symptoms detected</li>'
+                    }
+                </ul>
+            </div>
+
+            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                <h4 class="font-bold mb-2 text-green-800">
+                    <i class="fas fa-lightbulb mr-2"></i>Recommendations:
+                </h4>
+                <ul class="list-disc list-inside space-y-1">
+                    ${
+                        recommendations.length
+                        ? recommendations.map(r => `<li class="text-gray-700">${r}</li>`).join('')
+                        : '<li class="text-gray-500">No recommendations available</li>'
+                    }
+                </ul>
+            </div>
+        </div>
+    `;
+
+    result.classList.remove('hidden');
+    status.textContent = 'Analysis Complete';
+    status.classList.remove('text-red-600');
+    status.classList.add('text-green-600');
+}
+
+
+
+        function showError(msg) {
+            error.textContent = msg;
+            error.classList.remove('hidden');
+            status.textContent = 'Error occurred';
+            status.classList.add('text-red-600');
+        }
+
+        // Load initial prompt
+        window.onload = loadPrompt;
+    </script>
+</body>
+</html>

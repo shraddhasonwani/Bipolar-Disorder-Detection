@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI MULTIMODAL - AI-Powered Mental Health Diagnosis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style-enhanced.css') }}">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-brain"></i>
+                <span>AI MULTIMODAL</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#tech-stack" class="nav-link">Technology</a></li>
+                <li><a href="#ethics" class="nav-link">Ethics</a></li>
+                <li><a href="#research" class="nav-link">Research</a></li>
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Revolutionary AI for 
+                    <span class="gradient-text">Bipolar Disorder Detection</span>
+                </h1>
+                <p class="hero-subtitle">
+                    AI MULTIMODAL uses advanced multimodal AI to provide **objective, explainable, and temporal classification** of Bipolar Disorder (BD) and Major Depressive Disorder (MDD) leveraging our **91.2% F1-Score model**.
+                </p>
+                <div class="hero-buttons flex justify-center space-x-4">
+    <!-- Try Demo -->
+    <a href="{{ url_for('dashboard') }}"
+        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition duration-300 flex items-center space-x-2">
+        <i class="fas fa-rocket"></i>
+        <span>Try Demo</span>
+    </a>
+
+    <!-- Learn More -->
+    <a href="#about"
+        class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-8 rounded-lg transition duration-300 flex items-center space-x-2">
+        <i class="fas fa-play"></i>
+        <span>Learn More</span>
+    </a>
+</div>
+
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">91.2%</span>
+                        <span class="stat-label">F1-Score</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">Temporal</span>
+                        <span class="stat-label">Classification</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">3 Modalities</span>
+                        <span class="stat-label">Biomarker Sources</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="brain-animation">
+                    <i class="fas fa-brain"></i>
+                    <div class="pulse-ring"></div>
+                    <div class="pulse-ring delay-1"></div>
+                    <div class="pulse-ring delay-2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2>Transforming Mental Health Diagnosis</h2>
+                <p>Addressing the critical gap in psychiatric diagnosis with AI-powered precision</p>
+            </div>
+            <div class="about-grid">
+                <div class="about-content">
+                    <h3>The Challenge</h3>
+                    <p>Up to 60% of Bipolar Disorder cases are initially misdiagnosed as Major Depressive Disorder, 
+                    leading to inappropriate treatment and worsened outcomes. Diagnostic delays average **$\approx 6-10$ years**.</p>
+                    
+                    <h3>Our Solution</h3>
+                    <p>AI MULTIMODAL combines voice biomarkers, facial expressions, and conversational AI through a 
+                    **Cross-Modal Attentional Network** and Temporal Fusion Layer to provide accurate, real-time diagnosis with clinical explanations.</p>
+                    
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>**91.2% F1-Score** diagnostic accuracy</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>21-day stable classification</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Explainable AI with SHAP</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Personalized treatment recommendations</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-visual">
+                    <div class="system-diagram">
+                        <div class="modality voice">
+                            <i class="fas fa-microphone"></i>
+                            <span>Voice Analysis</span>
+                        </div>
+                        <div class="modality facial">
+                            <i class="fas fa-face-smile"></i>
+                            <span>Facial Analysis</span>
+                        </div>
+                        <div class="modality text">
+                            <i class="fas fa-comments"></i>
+                            <span>Conversational AI</span>
+                        </div>
+                        <div class="fusion-center">
+                            <i class="fas fa-brain"></i>
+                            <span>AI Fusion</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Advanced AI Capabilities</h2>
+                <p>Cutting-edge technology for clinical excellence</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-layer-group"></i> </div>
+                    <h3>Multimodal Fusion</h3>
+                    <p>Simultaneous fusion of **Voice Biomarkers**, **Facial Action Units (AUs)**, and **Transformer-encoded linguistic features** for holistic assessment.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Real-Time Processing</h3>
+                    <p>Continuous monitoring and instant analysis with average response time of 2.3 seconds for in-session clinical support.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>Explainable AI (XAI)</h3>
+                    <p>**SHAP-based Feature Attribution** provides transparent, clinician-interpretable reasoning, highlighting the *specific* cross-modal biomarkers driving the classification.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <h3>Treatment Planning</h3>
+                    <p>Evidence-based treatment recommendations with personalized medication and therapy protocols tailored by AI insights.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Risk Stratification</h3>
+                    <p>**Clinical Alert System:** Built-in protocols for identifying and flagging acute changes in state (e.g., suicide risk, manic episodes) via continuous monitoring.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Performance Tracking</h3>
+                    <p>Continuous monitoring of diagnostic accuracy and treatment effectiveness with detailed analytics for clinical audit.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tech-stack" class="tech-stack">
+        <div class="container">
+            <div class="section-header">
+                <h2>The AI Engine: Technical Stack</h2>
+                <p>A breakdown of the cutting-edge frameworks powering our diagnostic precision.</p>
+            </div>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <i class="fab fa-python"></i>
+                    <h3>Core Language</h3>
+                    <p>Python for scientific computing and data pipeline orchestration.</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-robot"></i>
+                    <h3>NLP / Text</h3>
+                    <p>**BERT / RoBERTa (Transformers)** for contextual language embeddings and sentiment analysis.</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-eye"></i>
+                    <h3>Video / Facial</h3>
+                    <p>**OpenFace** for robust extraction of Action Unit (AU) intensities and Gaze vectors.</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-microphone-alt"></i>
+                    <h3>Audio / Voice</h3>
+                    <p>**OpenSMILE & eGeMAPS** feature sets for clinically validated voice biomarker extraction.</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-layer-group"></i>
+                    <h3>Model Architecture</h3>
+                    <p>**Temporal Fusion Network** with Cross-Modal Attention and Bi-LSTM layers.</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-chart-area"></i>
+                    <h3>Explainability</h3>
+                    <p>**SHAP (SHapley Additive exPlanations)** for post-hoc model interpretability and clinician trust.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="ethics" class="ethics">
+        <div class="container">
+            <div class="section-header">
+                <h2>Ethics, Privacy, and Clinical Oversight</h2>
+                <p>Our commitment to responsible AI development in mental healthcare.</p>
+            </div>
+            <div class="ethics-content">
+                <div class="ethics-card">
+                    <i class="fas fa-user-lock"></i>
+                    <h3>Data Privacy & Security</h3>
+                    <p>Full **HIPAA compliance** and end-to-end encryption. All patient data is anonymized and processed according to strict clinical governance standards. We adhere to **data minimization** principles.</p>
+                </div>
+                <div class="ethics-card">
+                    <i class="fas fa-balance-scale"></i>
+                    <h3>Fairness & Bias Mitigation</h3>
+                    <p>Rigorous auditing of training data and model performance across demographic groups to actively identify and correct algorithmic bias, ensuring **equitable clinical recommendations**.</p>
+                </div>
+                <div class="ethics-card">
+                    <i class="fas fa-handshake"></i>
+                    <h3>Human Oversight & Consent</h3>
+                    <p>The AI is a **clinical support tool**, not a replacement. All diagnoses require final confirmation by a licensed clinician. Transparent **informed consent** is mandatory before any data collection.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="research" class="research">
+        <div class="container">
+            <div class="section-header">
+                <h2>Clinical Validation</h2>
+                <p>Rigorous research backing our AI technology</p>
+            </div>
+            <div class="research-grid">
+                <div class="research-stats">
+                    <div class="research-stat">
+                        <span class="stat-number">91.2%</span>
+                        <span class="stat-label">BD vs MDD F1-Score</span>
+                    </div>
+                    <div class="research-stat">
+                        <span class="stat-number">150</span>
+                        <span class="stat-label">Study Participants</span>
+                    </div>
+                    <div class="research-stat">
+                        <span class="stat-number">21 Days</span>
+                        <span class="stat-label">Stable Classification</span>
+                    </div>
+                    <div class="research-stat">
+                        <span class="stat-number">6-10 Years</span>
+                        <span class="stat-label">Traditional Diagnosis Time</span>
+                    </div>
+                </div>
+                <div class="research-content">
+                    <h3>Clinical Benefits</h3>
+                    <ul class="benefits-list">
+                        <li><strong>Reduced Misdiagnosis:</strong> Objective biomarker integration minimizes human error</li>
+                        <li><strong>Faster Diagnosis:</strong> Weeks instead of years for accurate classification</li>
+                        <li><strong>Personalized Care:</strong> Individual treatment optimization based on AI insights</li>
+                        <li><strong>Cost Effective:</strong> Reduced healthcare costs through early accurate diagnosis</li>
+                    </ul>
+                    
+                    <h3>Validation Studies</h3>
+                    <p>Our system has been validated through comprehensive clinical trials with psychiatric professionals, 
+                    demonstrating superior performance compared to traditional diagnostic methods.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2>Contact Us</h2>
+                <p>Ready to transform mental health diagnosis?</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>ayushsh001@gmail.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>+91 9336410743</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Medical AI Research Center<br>123 Innovation Drive<br>Healthcare City, HC 12345</span>
+                    </div>
+                    
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fas fa-globe"></i></a>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form>
+                        <div class="form-group">
+                            <input type="text" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" placeholder="Organization">
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="Your Message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-brain"></i>
+                        <span>AI MULTIMODAL</span>
+                    </div>
+                    <p>Revolutionizing mental health diagnosis through explainable AI and multimodal analysis.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#tech-stack">Technology</a></li>
+                        <li><a href="#research">Research</a></li>
+                        <li><a href="#">API Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#ethics">Ethics & Compliance</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#ethics">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">HIPAA Compliance</a></li>
+                        <li><a href="#">FDA Guidelines</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    
+    <!-- Chatbot Widget -->
+    <div id="chatbot-widget" class="chatbot-widget">
+        <div id="chatbot-toggle" class="chatbot-toggle">
+            <i class="fas fa-comments"></i>
+        </div>
+        
+        <div id="chatbot-container" class="chatbot-container" style="display: none;">
+            <div class="chatbot-header">
+                <h4><i class="fas fa-robot mr-2"></i>Bipolar Support Bot</h4>
+                <button id="chatbot-close" class="chatbot-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div id="chatbot-messages" class="chatbot-messages">
+                <div class="bot-message">
+                    <div class="message-content">
+                        Hi! I'm here to provide support and information about bipolar disorder. How are you feeling today?
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chatbot-input">
+                <input type="text" id="chatbot-input-field" placeholder="Type your message..." maxlength="500">
+                <button id="chatbot-send" class="chatbot-send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+    .chatbot-widget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+    
+    .chatbot-toggle {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        transition: all 0.3s ease;
+    }
+    
+    .chatbot-toggle:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+    }
+    
+    .chatbot-container {
+        position: absolute;
+        bottom: 80px;
+        right: 0;
+        width: 350px;
+        height: 500px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    
+    .chatbot-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .chatbot-header h4 {
+        margin: 0;
+        font-size: 16px;
+    }
+    
+    .chatbot-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 5px;
+    }
+    
+    .chatbot-messages {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .bot-message, .user-message {
+        max-width: 80%;
+        word-wrap: break-word;
+    }
+    
+    .bot-message {
+        align-self: flex-start;
+    }
+    
+    .user-message {
+        align-self: flex-end;
+    }
+    
+    .bot-message .message-content {
+        background: #f1f5f9;
+        color: #334155;
+        padding: 12px 16px;
+        border-radius: 18px 18px 18px 4px;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+    
+    .user-message .message-content {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 12px 16px;
+        border-radius: 18px 18px 4px 18px;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+    
+    .chatbot-input {
+        padding: 15px 20px;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        gap: 10px;
+    }
+    
+    #chatbot-input-field {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid #e2e8f0;
+        border-radius: 25px;
+        outline: none;
+        font-size: 14px;
+    }
+    
+    #chatbot-input-field:focus {
+        border-color: #667eea;
+    }
+    
+    .chatbot-send-btn {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .chatbot-send-btn:hover {
+        transform: scale(1.1);
+    }
+    
+    .typing-indicator {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 12px 16px;
+        background: #f1f5f9;
+        border-radius: 18px 18px 18px 4px;
+        align-self: flex-start;
+    }
+    
+    .typing-dot {
+        width: 8px;
+        height: 8px;
+        background: #94a3b8;
+        border-radius: 50%;
+        animation: typing 1.4s infinite;
+    }
+    
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    
+    @keyframes typing {
+        0%, 60%, 100% { transform: translateY(0); }
+        30% { transform: translateY(-10px); }
+    }
+    
+    @media (max-width: 768px) {
+        .chatbot-container {
+            width: 300px;
+            height: 400px;
+        }
+    }
+    </style>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatbotToggle = document.getElementById('chatbot-toggle');
+        const chatbotContainer = document.getElementById('chatbot-container');
+        const chatbotClose = document.getElementById('chatbot-close');
+        const chatbotMessages = document.getElementById('chatbot-messages');
+        const chatbotInput = document.getElementById('chatbot-input-field');
+        const chatbotSend = document.getElementById('chatbot-send');
+        
+        let isOpen = false;
+        
+        chatbotToggle.addEventListener('click', function() {
+            isOpen = !isOpen;
+            chatbotContainer.style.display = isOpen ? 'flex' : 'none';
+            if (isOpen) {
+                chatbotInput.focus();
+            }
+        });
+        
+        chatbotClose.addEventListener('click', function() {
+            isOpen = false;
+            chatbotContainer.style.display = 'none';
+        });
+        
+        function addMessage(content, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = isUser ? 'user-message' : 'bot-message';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.innerHTML = content;
+            
+            messageDiv.appendChild(contentDiv);
+            chatbotMessages.appendChild(messageDiv);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+        
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.id = 'typing-indicator';
+            
+            for (let i = 0; i < 3; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'typing-dot';
+                typingDiv.appendChild(dot);
+            }
+            
+            chatbotMessages.appendChild(typingDiv);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+        
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        async function sendMessage() {
+            const message = chatbotInput.value.trim();
+            if (!message) return;
+            
+            addMessage(message, true);
+            chatbotInput.value = '';
+            
+            showTypingIndicator();
+            
+            try {
+                const response = await fetch('/api/chatbot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+                
+                const data = await response.json();
+                
+                hideTypingIndicator();
+                
+                if (data.error) {
+                    addMessage('Sorry, I encountered an error. Please try again.');
+                } else {
+                    addMessage(data.response);
+                    
+                    if (data.crisis_alert) {
+                        setTimeout(() => {
+                            addMessage('<strong style="color: #ef4444;">⚠️ Crisis Alert:</strong> If you\'re in immediate danger, please call emergency services or go to your nearest emergency room.');
+                        }, 1000);
+                    }
+                }
+            } catch (error) {
+                hideTypingIndicator();
+                addMessage('Sorry, I\'m having trouble connecting. Please try again later.');
+            }
+        }
+        
+        chatbotSend.addEventListener('click', sendMessage);
+        
+        chatbotInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Activity Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<style>
+    /* --- Daily Activity Specific Styles --- */
+
+/* Ensures the number and date inputs are well-styled */
+.form-group input[type="number"],
+.form-group input[type="date"] {
+    padding: 12px;
+    font-size: 1.05rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Result Box Styling for Activity Analysis */
+.activity-summary-box {
+    margin-top: 25px;
+    padding: 20px;
+    background-color: #d1fae5; /* Light green background */
+    border-radius: 8px;
+    border-left: 5px solid #10b981; /* Green accent line */
+    text-align: left;
+}
+.activity-summary-box h3 {
+    color: #059669;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+}
+.activity-summary-box p {
+    color: #1e293b;
+    margin: 8px 0;
+    font-size: 1.05rem;
+}
+.activity-summary-box strong {
+    font-weight: 700;
+}
+
+/* Style for routine deviation indicators */
+.deviation-low {
+    color: #059669; /* Green for good routine */
+    font-weight: 600;
+}
+.deviation-high {
+    color: #b91c1c; /* Red for significant change/deviation */
+    font-weight: 600;
+}
+</style>
+<body>
+    {% include 'navbar.html' %} 
+    
+    <section class="container" style="padding-top: 8rem; text-align: center;">
+        <div class="section-header">
+            <h2>Daily Activities and Routine</h2>
+            <p>Log your activity to monitor energy levels and identify unusual behavior patterns.</p>
+        </div>
+        
+        <div class="tool-card" style="max-width: 500px; margin: 0 auto;">
+            <form action="{{ url_for('activity') }}" method="POST">
+                
+                <div class="form-group">
+                    <label for="activity_date">Date of Activity</label>
+                    <input type="date" id="activity_date" name="activity_date" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="steps">Total Steps Taken (Approx)</label>
+                    <input type="number" id="steps" name="steps" min="0" placeholder="e.g., 7500" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="minutes_active">Minutes of Moderate Activity</label>
+                    <input type="number" id="minutes_active" name="minutes_active" min="0" placeholder="e.g., 45" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem;">
+                    <i class="fas fa-running"></i> Log Activity
+                </button>
+            </form>
+            
+            {% if activity_data %}
+            <div class="result-box">
+                <h3>Activity Logged</h3>
+                <p>Steps: <strong>{{ activity_data.steps }}</strong> | Active Minutes: <strong>{{ activity_data.minutes_active }}</strong></p>
+                <p style="font-size: 0.9rem; color: #64748b;">Data recorded for {{ activity_data.date }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    
+    const form = document.querySelector('.contact-form form');
+    const dateInput = document.getElementById('activity_date');
+    const stepsInput = document.getElementById('steps');
+    const minutesActiveInput = document.getElementById('minutes_active');
+    
+    if (!form || !dateInput || !stepsInput || !minutesActiveInput) {
+        console.error("Missing required input elements for activity tracking form.");
+        return;
+    }
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const activityDate = dateInput.value;
+        const steps = parseInt(stepsInput.value, 10);
+        const minutesActive = parseInt(minutesActiveInput.value, 10);
+        
+        // --- Validation Check ---
+        if (!activityDate) {
+            alert('Please select the date of the activity.');
+            return;
+        }
+        if (steps < 0 || minutesActive < 0) {
+            alert('Steps and active minutes cannot be negative.');
+            return;
+        }
+        // --- End Validation ---
+
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalText = submitButton.innerHTML;
+        
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing Activity...';
+
+        // 1. Prepare the JSON data payload
+        const payload = {
+            date: activityDate,
+            steps: steps,
+            minutes_active: minutesActive
+        };
+
+        // 2. Send the data to the Flask API endpoint
+        fetch('/api/log_activity', { // NOTE: You need to define this route in your app.py
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // 3. Handle the JSON response from the Flask backend
+            displayResult(data);
+        })
+        .catch(error => {
+            console.error('Activity logging failed:', error);
+            alert(`Log submission failed: ${error.message}.`);
+        })
+        .finally(() => {
+            // Re-enable button
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalText;
+        });
+    });
+    
+    // --- Display Results Function ---
+    
+    function displayResult(data) {
+        let resultHtml = '';
+        
+        if (data.error) {
+            resultHtml = `
+                <h3>Analysis Error</h3>
+                <p style="color: #b91c1c;">${data.error}</p>
+            `;
+        } else {
+            // Assuming Flask returns 'deviation_score', 'deviation_message', and 'activity_level'
+            const score = data.deviation_score || 'N/A';
+            const message = data.deviation_message || 'Data logged successfully.';
+            const level = data.activity_level || 'Moderate';
+
+            let messageClass = 'deviation-low';
+            // Example logic: if deviation score is high (e.g., > 7/10), flag it
+            if (score > 7) {
+                messageClass = 'deviation-high'; 
+            }
+
+            resultHtml = `
+                <h3>Activity Log Summary (${data.date})</h3>
+                <p>Steps Logged: <strong>${data.steps || '0'}</strong></p>
+                <p>Active Minutes: <strong>${data.minutes_active || '0'}</strong></p>
+                <p>Routine Deviation Score: <strong>${score} / 10</strong></p>
+                <p>Behavioral Message: <span class="${messageClass}">${message}</span></p>
+            `;
+        }
+
+        // Insert the results into the HTML page
+        let resultBox = document.querySelector('.activity-summary-box');
+        if (!resultBox) {
+            // If the box doesn't exist, create it below the form
+            resultBox = document.createElement('div');
+            resultBox.className = 'activity-summary-box';
+            form.parentNode.appendChild(resultBox); 
+        }
+        resultBox.innerHTML = resultHtml;
+    }
+
+});
+</script>
+</html>

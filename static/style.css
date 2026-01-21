@@ -1,0 +1,948 @@
+/* =========================================================================
+   1. GLOBAL STYLES & RESET
+   ========================================================================= */
+
+:root {
+    --color-primary: #2563eb; /* Blue */
+    --color-primary-dark: #1e40af;
+    --color-secondary: #64748b; /* Gray/Slate */
+    --color-success: #10b981; /* Green */
+    --color-warning: #f59e0b; /* Yellow/Amber */
+    --color-danger: #ef4444; /* Red */
+    --color-background: #f1f5f9; /* Light Gray Background */
+    --color-card: #ffffff;
+    /* Corrected: Include 'Inter' as the primary font choice */
+    --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    /* Uses the corrected variable from :root */
+    font-family: var(--font-family-sans); 
+    line-height: 1.6;
+    color: #333;
+    background-color: var(--color-background);
+    padding-top: 60px; /* Space for fixed navbar */
+    overflow-x: hidden; /* Recommended for responsive designs */
+}
+
+/* Base style for all content sections */
+section {
+    padding: 60px 0;
+}
+
+/* =========================================================================
+   2. LAYOUT & CONTAINERS
+   ========================================================================= */
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-top: 20px;
+}
+
+.section-header h2 {
+    font-size: 2.2rem;
+    color: var(--color-primary-dark);
+    margin-bottom: 10px;
+}
+
+.section-header p {
+    font-size: 1.1rem;
+    color: var(--color-secondary);
+}
+
+/* =========================================================================
+   3. NAVIGATION BAR (Used in navbar.html)
+   ========================================================================= */
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--color-card);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+/* Original Nav link styling (used if .nav-menu is not present) */
+.logo a {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.nav-links li {
+    margin-left: 20px;
+}
+
+.nav-links a,
+.nav-links button {
+    text-decoration: none;
+    color: #475569;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s, color 0.2s;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.nav-links a:hover,
+.nav-links button:hover {
+    background-color: #e2e8f0;
+    color: var(--color-primary);
+}
+
+/* Specific styling for the logout button in the navbar */
+.nav-links .logout-link {
+    background-color: var(--color-danger);
+    color: var(--color-card);
+    padding: 8px 15px;
+}
+
+.nav-links .logout-link:hover {
+    background-color: #c70d0d;
+    color: var(--color-card);
+}
+
+/* --- Navigation Enhancements for index.html (Nav-menu/Nav-logo) --- */
+.nav-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo i {
+    color: var(--color-warning);
+    margin-right: 10px;
+    font-size: 1.8rem;
+}
+
+.nav-menu {
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+.nav-menu li {
+    margin-left: 20px;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: #475569;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-menu a:hover {
+    background-color: #e2e8f0;
+    color: var(--color-primary);
+}
+
+/* Hamburger menu for mobile */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 4px 0;
+    background-color: #333;
+    transition: all 0.3s ease;
+}
+
+
+/* =========================================================================
+   4. BUTTONS
+   ========================================================================= */
+
+.btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none; /* Important for <a> styled as buttons */
+}
+
+.btn i {
+    margin-right: 8px;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-card);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-dark);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+}
+
+.btn-secondary {
+    background-color: var(--color-card);
+    color: var(--color-secondary);
+    border: 2px solid #e2e8f0;
+}
+
+.btn-secondary:hover {
+    background-color: #f8fafc;
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.btn-danger {
+    background-color: var(--color-danger);
+    color: var(--color-card);
+}
+
+.btn-danger:hover {
+    background-color: #b91c1c;
+}
+
+/* =========================================================================
+   5. FORMS & INPUTS (Used across all tool pages)
+   ========================================================================= */
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group input:not([type="checkbox"]),
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    outline: none;
+}
+
+/* =========================================================================
+   6. CARDS & FOOTER
+   ========================================================================= */
+
+.card {
+    background-color: var(--color-card);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    color: var(--color-primary-dark);
+    margin-bottom: 15px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 10px;
+}
+
+/* Original Generic Footer Rule (Overwritten by Section 14) */
+footer {
+    background-color: #334155;
+    color: var(--color-card);
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 50px;
+    font-size: 0.9rem;
+}
+
+footer p {
+    margin: 0;
+}
+
+/* =========================================================================
+   7. UTILITY CLASSES (Status indicators)
+   ========================================================================= */
+
+.status-good {
+    color: var(--color-success);
+    font-weight: 600;
+}
+
+.status-warning {
+    color: var(--color-warning);
+    font-weight: 600;
+}
+
+.status-error {
+    color: var(--color-danger);
+    font-weight: 600;
+}
+
+/* Style for the Hero title gradient effect */
+.gradient-text {
+    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-dark));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    /* text-fill-color: transparent; */
+}
+
+/* =========================================================================
+8. DASHBOARD & TOOL PAGE COMPONENTS (Consolidated from original 9)
+   ========================================================================= */
+
+/* --- Main Content Layout for Dashboards/Tools --- */
+.main-content {
+    padding-top: 30px;
+}
+
+/* --- Status/Result Panels --- */
+.alert-panel {
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.alert-success {
+    background-color: #d1fae5; /* Light Green */
+    color: var(--color-success);
+    border: 1px solid #a7f3d0;
+}
+
+.alert-danger {
+    background-color: #fee2e2; /* Light Red */
+    color: var(--color-danger);
+    border: 1px solid #fca5a5;
+}
+
+/* --- Prediction & Upload Section --- */
+.prediction-area {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.upload-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.upload-option i {
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    margin-bottom: 10px;
+}
+
+/* --- Data Tables (for Report/Result pages) --- */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: var(--color-card);
+}
+
+.data-table th, .data-table td {
+    padding: 12px 15px;
+    border: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.data-table th {
+    background-color: #e2e8f0;
+    color: #475569;
+    font-weight: 700;
+}
+
+/* =========================================================================
+   9. HERO SECTION
+   ========================================================================= */
+.hero {
+    background-color: var(--color-card);
+    padding: 100px 0 60px;
+}
+
+.hero-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.hero-content {
+    flex: 1;
+    max-width: 600px;
+}
+
+.hero-title {
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: #1e293b;
+}
+
+.hero-subtitle {
+    font-size: 1.15rem;
+    color: var(--color-secondary);
+    margin-bottom: 30px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.hero-stats {
+    display: flex;
+    gap: 30px;
+}
+
+.stat {
+    text-align: left;
+}
+
+.stat-number {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-primary-dark);
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--color-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Hero Visual (Brain Animation Placeholder) */
+.hero-visual {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 50px;
+}
+
+.brain-animation {
+    position: relative;
+    font-size: 5rem;
+    color: var(--color-primary);
+}
+
+/* Simple pulse animation for visual effect */
+.pulse-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border: 3px solid rgba(37, 99, 235, 0.5); /* Primary Blue */
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 3s infinite;
+}
+
+.pulse-ring.delay-1 { animation-delay: 0.5s; }
+.pulse-ring.delay-2 { animation-delay: 1s; }
+
+@keyframes pulse {
+    0% { width: 50px; height: 50px; opacity: 1; }
+    100% { width: 200px; height: 200px; opacity: 0; }
+}
+
+
+/* =========================================================================
+   10. ABOUT SECTION
+   ========================================================================= */
+.about {
+    padding: 60px 0;
+}
+
+.about-grid {
+    display: flex;
+    gap: 50px;
+    align-items: center;
+}
+
+.about-content {
+    flex: 2;
+}
+
+.about-visual {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.features-list {
+    margin-top: 20px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 1.05rem;
+    color: #475569;
+}
+
+.feature-item i {
+    color: var(--color-success);
+    margin-right: 10px;
+}
+
+/* Multimodal System Diagram */
+.system-diagram {
+    position: relative;
+    display: grid;
+    grid-template-areas: 
+        "voice fusion"
+        "facial fusion"
+        "text fusion";
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.modality {
+    background-color: var(--color-card);
+    border: 1px solid #e2e8f0;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.modality i {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin-bottom: 5px;
+}
+
+.modality span {
+    display: block;
+    font-weight: 600;
+}
+
+.voice { grid-area: voice; }
+.facial { grid-area: facial; }
+.text { grid-area: text; }
+
+.fusion-center {
+    grid-area: fusion;
+    background-color: var(--color-primary);
+    color: var(--color-card);
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.fusion-center i {
+    font-size: 2.5rem;
+    color: var(--color-card);
+    margin-bottom: 10px;
+}
+
+.fusion-center span {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+
+/* =========================================================================
+   11. FEATURES SECTION
+   ========================================================================= */
+.features {
+    background-color: var(--color-background); /* Use the background color */
+    padding: 60px 0;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.feature-card {
+    /* Inherits from .card */
+    text-align: center;
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    margin-bottom: 15px;
+}
+
+.feature-card h3 {
+    font-size: 1.35rem;
+    color: var(--color-primary-dark);
+    margin-bottom: 10px;
+}
+
+/* =========================================================================
+   12. RESEARCH SECTION
+   ========================================================================= */
+.research {
+    padding: 60px 0;
+}
+
+.research-grid {
+    display: flex;
+    gap: 50px;
+    align-items: flex-start;
+}
+
+.research-stats {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.research-stat {
+    /* Use the same styling as .stat, but in a card */
+    background-color: var(--color-card);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.research-content {
+    flex: 2;
+}
+
+.benefits-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 15px;
+}
+
+.benefits-list li {
+    margin-bottom: 10px;
+    padding-left: 25px;
+    position: relative;
+    color: #475569;
+}
+
+.benefits-list li::before {
+    content: "•";
+    color: var(--color-primary);
+    font-weight: 800;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+    position: absolute;
+    left: 0;
+}
+
+/* =========================================================================
+   13. CONTACT SECTION
+   ========================================================================= */
+.contact {
+    padding: 60px 0;
+    background-color: var(--color-card);
+}
+
+.contact-grid {
+    display: flex;
+    gap: 50px;
+}
+
+.contact-info {
+    flex: 1;
+    padding: 20px;
+    border-right: 1px solid #e2e8f0;
+}
+
+.contact-form {
+    flex: 2;
+    padding: 20px;
+}
+
+.contact-info h3 {
+    color: var(--color-primary-dark);
+    margin-bottom: 25px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    color: #475569;
+    font-size: 1.05rem;
+}
+
+.contact-item i {
+    color: var(--color-primary);
+    margin-right: 15px;
+    font-size: 1.2rem;
+    margin-top: 3px;
+}
+
+.social-links {
+    margin-top: 30px;
+}
+
+.social-links a {
+    display: inline-block;
+    color: var(--color-secondary);
+    font-size: 1.5rem;
+    margin-right: 15px;
+    transition: color 0.2s;
+}
+
+.social-links a:hover {
+    color: var(--color-primary);
+}
+
+/* =========================================================================
+   14. FOOTER
+   ========================================================================= */
+.footer {
+    background-color: #1e293b; /* Darker than the default footer */
+    color: #cbd5e1;
+    padding: 50px 0 20px;
+    font-size: 0.95rem;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.footer-section h4 {
+    color: var(--color-card);
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+    color: #94a3b8;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-section ul li a:hover {
+    color: var(--color-primary);
+}
+
+.footer-logo {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-card);
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.footer-logo i {
+    color: var(--color-warning);
+    margin-right: 10px;
+}
+
+.footer-bottom {
+    text-align: center;
+    border-top: 1px solid #334155;
+    padding-top: 20px;
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
+/* =========================================================================
+   15. RESPONSIVE ADJUSTMENTS (Consolidated & Cleaned)
+   ========================================================================= */
+
+@media (max-width: 992px) {
+    /* Navbar for index.html */
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        background-color: var(--color-card);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 10px 0;
+    }
+    .nav-menu li {
+        margin: 0;
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .nav-menu a {
+        display: block;
+        padding: 15px 20px;
+    }
+    .hamburger {
+        display: flex;
+    }
+    
+    /* Hero Section */
+    .hero-container {
+        flex-direction: column;
+        text-align: center;
+    }
+    .hero-content {
+        max-width: 100%;
+    }
+    .hero-visual {
+        padding-left: 0;
+        margin-top: 50px;
+    }
+    .hero-buttons {
+        justify-content: center;
+    }
+    .hero-stats {
+        justify-content: center;
+    }
+    .stat {
+        text-align: center;
+    }
+
+    /* About Section */
+    .about-grid {
+        flex-direction: column;
+        text-align: center;
+    }
+    .about-content {
+        text-align: left;
+    }
+    .system-diagram {
+        grid-template-areas: 
+            "voice"
+            "facial"
+            "text"
+            "fusion";
+        grid-template-columns: 1fr;
+        gap: 15px;
+        width: 100%;
+        max-width: 300px;
+    }
+    .fusion-center {
+        height: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Original Navbar styles (for utility nav-links) */
+    .nav-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .nav-links {
+        margin-top: 10px;
+        flex-wrap: wrap;
+    }
+    .nav-links li {
+        margin: 5px 10px 5px 0;
+    }
+    body {
+        padding-top: 120px; /* Adjust for stacked navbar */
+    }
+
+    /* Research Section */
+    .research-grid {
+        flex-direction: column;
+    }
+    .research-stats {
+        grid-template-columns: 1fr;
+    }
+
+    /* Contact Section */
+    .contact-grid {
+        flex-direction: column;
+    }
+    .contact-info {
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 30px;
+    }
+}

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text and Sentiment Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<style>
+    /* --- Text Analysis Specific Styles --- */
+
+/* Ensures the text area is large enough for a journal entry */
+.form-group textarea {
+    width: 100%;
+    min-height: 250px; /* Provides ample writing space */
+    padding: 15px;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    resize: vertical; /* Allows user to resize vertically */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.form-group textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* Result Box Styling for Text Analysis */
+.sentiment-report-box {
+    margin-top: 25px;
+    padding: 20px;
+    background-color: #fff7ed; /* Light orange/yellow background */
+    border-radius: 8px;
+    border-left: 5px solid #f97316; /* Orange accent line */
+    text-align: left;
+}
+.sentiment-report-box h3 {
+    color: #f97316;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+}
+.sentiment-report-box p {
+    color: #1e293b;
+    margin: 8px 0;
+    font-size: 1.05rem;
+}
+.sentiment-report-box strong {
+    font-weight: 700;
+}
+</style>
+<body>
+    {% include 'navbar.html' %} 
+
+    <section class="container" style="padding-top: 8rem; text-align: center;">
+        <div class="section-header">
+            <h2>Text and Sentiment Analysis</h2>
+            <p>Write about your day or mood. The system will analyze your language for emotional indicators.</p>
+        </div>
+        
+        <div class="tool-card" style="max-width: 700px; margin: 0 auto;">
+            <form action="{{ url_for('text_analysis') }}" method="POST">
+                
+                <div class="form-group">
+                    <label for="journal_entry">Your Journal Entry</label>
+                    <textarea id="journal_entry" name="journal_entry" rows="8" placeholder="Start typing your thoughts here..." required></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem;">
+                    <i class="fas fa-microchip"></i> Analyze Text
+                </button>
+            </form>
+            
+            {% if text_analysis_result %}
+            <div class="result-box">
+                <h3>Sentiment Report</h3>
+                <p>Overall Sentiment: <strong>{{ text_analysis_result.sentiment }}</strong></p>
+                <p>Key Emotion Detected: <strong>{{ text_analysis_result.emotion }}</strong></p>
+                <p style="font-size: 0.9rem; color: #64748b;">(Confidence: {{ text_analysis_result.confidence }}%)</p>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    
+    const form = document.querySelector('.tool-card form');
+    const journalEntry = document.getElementById('journal_entry');
+    
+    if (!form || !journalEntry) {
+        console.error("Missing required elements for text analysis.");
+        return;
+    }
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const textContent = journalEntry.value.trim();
+        
+        if (textContent.length < 50) {
+            alert('Please write at least a few sentences (50 characters minimum) for meaningful analysis.');
+            return;
+        }
+
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalText = submitButton.innerHTML;
+        
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-brain fa-spin"></i> Analyzing Text...';
+
+        // 1. Prepare the JSON data payload
+        const payload = {
+            text: textContent
+        };
+
+        // 2. Send the data to the Flask API endpoint
+        fetch('/api/analyze_text', { // NOTE: You need to define this route in your app.py
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(response => {
+            // Check for non-200 status codes
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // 3. Handle the JSON response from the Flask backend
+            displayResult(data);
+        })
+        .catch(error => {
+            console.error('Text analysis failed:', error);
+            alert(`Prediction failed: ${error.message}. Check console for details.`);
+        })
+        .finally(() => {
+            // Re-enable button
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalText;
+        });
+    });
+    
+    // --- Display Results Function ---
+    
+    function displayResult(data) {
+        let resultHtml = '';
+        
+        if (data.error) {
+            resultHtml = `
+                <h3>Analysis Error</h3>
+                <p style="color: #ef4444;">${data.error}</p>
+            `;
+        } else {
+            // Assuming Flask returns 'sentiment', 'emotion', and 'confidence'
+            const sentiment = data.sentiment || 'Neutral';
+            const emotion = data.emotion || 'Calmness';
+            const confidence = (data.confidence * 100).toFixed(1) || 'N/A';
+            const risk = data.bipolar_risk || 'Low';
+
+            resultHtml = `
+                <h3>Sentiment Report</h3>
+                <p><strong>Overall Sentiment:</strong> ${sentiment}</p>
+                <p><strong>Key Emotion Detected:</strong> ${emotion}</p>
+                <p><strong>Bipolar Risk Indicator:</strong> ${risk}</p>
+                <p style="font-size: 0.9rem; color: #64748b;">Confidence: ${confidence}%</p>
+            `;
+        }
+
+        // Insert the results into the HTML page
+        let resultBox = document.querySelector('.sentiment-report-box');
+        if (!resultBox) {
+            // If the box doesn't exist, create it below the form
+            resultBox = document.createElement('div');
+            resultBox.className = 'sentiment-report-box';
+            form.parentNode.appendChild(resultBox); 
+        }
+        resultBox.innerHTML = resultHtml;
+    }
+
+});
+</script>
+</html>

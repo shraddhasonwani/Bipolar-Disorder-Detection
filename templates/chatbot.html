@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bipolar Support Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .chat-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .chat-messages {
+            height: 500px;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .message {
+            margin: 15px 0;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .message.user {
+            justify-content: flex-end;
+        }
+        
+        .message-content {
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 20px;
+            word-wrap: break-word;
+        }
+        
+        .message.bot .message-content {
+            background: #e3f2fd;
+            color: #1565c0;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message.user .message-content {
+            background: #667eea;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 16px;
+        }
+        
+        .chat-input input:focus {
+            border-color: #667eea;
+        }
+        
+        .chat-input button {
+            margin-left: 10px;
+            padding: 12px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .chat-input button:hover {
+            background: #5a6fd8;
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 10px 18px;
+            background: #e3f2fd;
+            border-radius: 20px;
+            border-bottom-left-radius: 5px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .mood-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+        
+        .mood-btn {
+            padding: 8px 15px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .mood-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .crisis-alert {
+            background: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            color: #c62828;
+        }
+        
+        .crisis-alert h4 {
+            margin: 0 0 10px 0;
+            color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>🧠 Bipolar Support Assistant</h2>
+                <p>I'm here to help you understand and manage bipolar disorder</p>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">
+                    <div class="message-content">
+                        Hello! I'm your bipolar disorder support assistant. I can help you with:
+                        <br><br>
+                        • Understanding bipolar symptoms<br>
+                        • Mood tracking and management<br>
+                        • Coping strategies<br>
+                        • Crisis support resources<br>
+                        • General mental health guidance<br>
+                        <br>
+                        How are you feeling today?
+                        
+                        <div class="mood-buttons">
+                            <button class="mood-btn" onclick="quickMood('great')">😊 Great</button>
+                            <button class="mood-btn" onclick="quickMood('good')">🙂 Good</button>
+                            <button class="mood-btn" onclick="quickMood('okay')">😐 Okay</button>
+                            <button class="mood-btn" onclick="quickMood('low')">😔 Low</button>
+                            <button class="mood-btn" onclick="quickMood('terrible')">😢 Terrible</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="typing-indicator" id="typingIndicator">
+                    Bot is typing...
+                </div>
+            </div>
+            
+            <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="Type your message here..." onkeypress="handleKeyPress(event)">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin: 20px;">
+            <a href="/dashboard" class="btn">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        function quickMood(mood) {
+            const input = document.getElementById('messageInput');
+            input.value = `I'm feeling ${mood} today`;
+            sendMessage();
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // Show typing indicator
+            showTyping();
+            
+            // Send to backend
+            fetch('/api/chatbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideTyping();
+                addMessage(data.response, 'bot');
+                
+                // Show crisis alert if needed
+                if (data.crisis_alert) {
+                    showCrisisAlert();
+                }
+            })
+            .catch(error => {
+                hideTyping();
+                addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+                console.error('Error:', error);
+            });
+        }
+        
+        function addMessage(content, sender) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.innerHTML = content;
+            
+            messageDiv.appendChild(contentDiv);
+            messagesContainer.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function showTyping() {
+            document.getElementById('typingIndicator').style.display = 'block';
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function hideTyping() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+        
+        function showCrisisAlert() {
+            const alertHtml = `
+                <div class="crisis-alert">
+                    <h4>🚨 Crisis Support Resources</h4>
+                    <p><strong>If you're in immediate danger, please call emergency services (911)</strong></p>
+                    <p><strong>National Suicide Prevention Lifeline:</strong> 988</p>
+                    <p><strong>Crisis Text Line:</strong> Text HOME to 741741</p>
+                    <p><strong>NAMI Helpline:</strong> 1-800-950-NAMI (6264)</p>
+                </div>
+            `;
+            addMessage(alertHtml, 'bot');
+        }
+    </script>
+</body>
+</html>

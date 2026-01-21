@@ -1,0 +1,21 @@
+<nav class="navbar">
+    <div class="container nav-container">
+        <div class="logo">
+            <a href="{{ url_for('dashboard') }}">
+                <i class="fas fa-brain" style="color: var(--color-warning);"></i> AI Multimodal
+            </a>
+        </div>
+        
+        <ul class="nav-links">
+            <li><a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a></li>
+            <li><a href="{{ url_for('voice_page') }}" class="nav-link">Voice</a></li>
+            <li><a href="{{ url_for('video_page') }}" class="nav-link">Camera</a></li>
+            <li><a href="{{ url_for('report') }}" class="nav-link">Report</a></li>
+            <li>
+                <a href="{{ url_for('logout') }}" class="btn logout-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>

@@ -1,0 +1,12 @@
+flask
+flask-cors
+torch
+librosa
+soundfile
+opencv-python
+transformers
+joblib
+numpy
+pymongo
+werkzeug
+python-dotenv

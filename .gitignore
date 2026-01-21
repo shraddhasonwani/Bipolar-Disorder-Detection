@@ -205,3 +205,44 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+.env/
+
+# Large datasets (VERY IMPORTANT)
+BP_Dataset/
+BP_Organized_Dataset/
+Processed_Features/
+fusion_output/
+temp_audio/
+temp_uploads/
+
+# OpenFace (huge)
+OpenFace_2.2.0_win_x64/
+
+# Audio / Video / Data files
+*.wav
+*.mp3
+*.mp4
+*.avi
+*.csv
+*.npy
+*.pkl
+*.pth
+*.h5
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - AI MULTIMODAL</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style-enhanced.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            padding-top: 55px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            transition: 0.3s;
+            border: 1px solid #e2e8f0;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+            border-color: #667eea;
+        }
+
+        .feature-icon {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 26px;
+        }
+
+        .tool-status {
+            margin-top: 12px;
+            font-size: 0.8rem;
+            padding: 5px 14px;
+            border-radius: 50px;
+            display: inline-block;
+            background: #d1fae5;
+            color: #065f46;
+            font-weight: 600;
+        }
+
+        .primary-card {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            color: white;
+            border: none;
+        }
+
+        .primary-card p {
+            color: #e5e7eb;
+        }
+
+        .disabled-card {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+{% include 'navbar.html' %}
+
+<main class="container">
+
+    <section class="text-center mb-3">
+        <h1>Welcome, {{ session.get('username', 'User') }} 👋</h1>
+        <p class="text-muted">Your centralized hub for multimodal mental health diagnostics</p>
+    </section>
+
+    <section class="text-center mb-2">
+        <h2><i class="fas fa-microchip"></i> AI Diagnostic Tools</h2>
+        <p class="text-muted">Choose a modality to begin analysis</p>
+    </section>
+
+    <div class="features-grid">
+
+        <!-- AUDIO -->
+        <a href="{{ url_for('voice_page') }}" class="feature-card">
+
+            <div class="feature-icon" style="background:#e0f2fe;">
+                <i class="fas fa-microphone" style="color:#0284c7;"></i>
+            </div>
+            <h3>Voice Detection</h3>
+            <p>Analyze vocal biomarkers for mood detection</p>
+            <span class="tool-status">Ready</span>
+        </a>
+
+        <!-- VIDEO -->
+        <a href="{{ url_for('video_page') }}" class="feature-card">
+            <div class="feature-icon" style="background:#fef9e7;">
+                <i class="fas fa-face-smile" style="color:#f59e0b;"></i>
+            </div>
+            <h3>Facial Detection</h3>
+            <p>Detect emotions using facial expressions</p>
+            <span class="tool-status">Ready</span>
+        </a>
+
+        <!-- TEXT -->
+        <a href="{{ url_for('text_page') }}" class="feature-card">
+            <div class="feature-icon" style="background:#fee2e2;">
+                <i class="fas fa-keyboard" style="color:#ef4444;"></i>
+            </div>
+            <h3>Text Analysis</h3>
+            <p>Analyze linguistic and emotional patterns</p>
+            <span class="tool-status">Ready</span>
+        </a>
+
+        <!-- CHATBOT -->
+        <a href="{{ url_for('chatbot_page') }}" class="feature-card">
+            <div class="feature-icon" style="background:#f0f9ff;">
+                <i class="fas fa-robot" style="color:#0ea5e9;"></i>
+            </div>
+            <h3>AI Support Chat</h3>
+            <p>24/7 bipolar disorder support assistant</p>
+            <span class="tool-status">Ready</span>
+        </a>
+
+        <!-- SLEEP (DISABLED) -->
+        <div class="feature-card disabled-card">
+            <div class="feature-icon" style="background:#eef2ff;">
+                <i class="fas fa-bed" style="color:#4f46e5;"></i>
+            </div>
+            <h3>Sleep Patterns</h3>
+            <p>Coming soon</p>
+            <span class="tool-status">Inactive</span>
+        </div>
+
+        <!-- ACTIVITY (DISABLED) -->
+        <div class="feature-card disabled-card">
+            <div class="feature-icon" style="background:#d1fae5;">
+                <i class="fas fa-running" style="color:#10b981;"></i>
+            </div>
+            <h3>Daily Activity</h3>
+            <p>Coming soon</p>
+            <span class="tool-status">Inactive</span>
+        </div>
+
+        <!-- REPORT -->
+        <a href="{{ url_for('report') }}" class="feature-card primary-card animate-on-load">
+            <div class="feature-icon" style="background:white;">
+                <i class="fas fa-chart-pie" style="color:#2563eb;"></i>
+            </div>
+            <h3>Multimodal Report</h3>
+            <p>View combined AI diagnostic results</p>
+            <div class="btn btn-light mt-2 fw-bold">View Analysis</div>
+        </a>
+
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">Logout</a>
+    </div>
+
+</main>
+
+{% include 'footer.html' %}
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.animate-on-load').forEach((card, i) => {
+        card.style.opacity = 0;
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = '0.4s';
+            card.style.opacity = 1;
+            card.style.transform = 'translateY(0)';
+        }, i * 100);
+    });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Pattern Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<style>
+    /* --- Sleep Pattern Specific Styles --- */
+
+/* Ensures date/time inputs are consistent and clear */
+.form-group input[type="datetime-local"],
+.form-group input[type="number"] {
+    padding: 12px;
+    font-size: 1.05rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Result Box Styling for Sleep Analysis */
+.sleep-analysis-box {
+    margin-top: 25px;
+    padding: 20px;
+    background-color: #f0f4ff; /* Light indigo/blue background */
+    border-radius: 8px;
+    border-left: 5px solid #4f46e5; /* Indigo accent line */
+    text-align: left;
+}
+.sleep-analysis-box h3 {
+    color: #4f46e5;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+}
+.sleep-analysis-box p {
+    color: #1e293b;
+    margin: 8px 0;
+    font-size: 1.05rem;
+}
+.sleep-analysis-box strong {
+    font-weight: 700;
+    color: #1e293b;
+}
+
+/* Special styling for warning/critical messages */
+.sleep-warning {
+    color: #b91c1c; /* Dark red for critical warnings */
+    font-weight: 600;
+}
+.sleep-good {
+    color: #059669; /* Dark green for positive feedback */
+    font-weight: 600;
+}
+</style>
+<body>
+    {% include 'navbar.html' %} 
+    
+    <section class="container" style="padding-top: 8rem; text-align: center;">
+        <div class="section-header">
+            <h2>Sleep Pattern Tracking</h2>
+            <p>Log your sleep data to monitor circadian rhythms, which are critical for mood stability.</p>
+        </div>
+        
+        <div class="tool-card" style="max-width: 500px; margin: 0 auto;">
+            <form action="{{ url_for('sleep_pattern') }}" method="POST">
+                
+                <div class="form-group">
+                    <label for="bed_time">Time Went to Bed</label>
+                    <input type="datetime-local" id="bed_time" name="bed_time" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="wake_time">Time Woke Up</label>
+                    <input type="datetime-local" id="wake_time" name="wake_time" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="sleep_quality">Perceived Sleep Quality (1=Poor, 5=Excellent)</label>
+                    <input type="number" id="sleep_quality" name="sleep_quality" min="1" max="5" placeholder="e.g., 4" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem;">
+                    <i class="fas fa-bed"></i> Log and Analyze Sleep
+                </button>
+            </form>
+            
+            {% if sleep_analysis %}
+            <div class="result-box">
+                <h3>Sleep Duration Analysis</h3>
+                <p>Total Sleep: <strong>{{ sleep_analysis.duration }}</strong> hours</p>
+                <p>Conclusion: <strong>{{ sleep_analysis.message }}</strong></p>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    
+    const form = document.querySelector('.contact-form form');
+    const bedTimeInput = document.getElementById('bed_time');
+    const wakeTimeInput = document.getElementById('wake_time');
+    const sleepQualityInput = document.getElementById('sleep_quality');
+    
+    if (!form || !bedTimeInput || !wakeTimeInput || !sleepQualityInput) {
+        console.error("Missing required input elements for sleep pattern form.");
+        return;
+    }
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const bedTime = new Date(bedTimeInput.value);
+        const wakeTime = new Date(wakeTimeInput.value);
+        const sleepQuality = parseInt(sleepQualityInput.value, 10);
+        
+        // --- Validation Check ---
+        if (wakeTime <= bedTime) {
+            alert('Wake-up time must be after the time you went to bed. Please correct the times.');
+            return;
+        }
+        
+        // Calculate duration in hours for display/initial check
+        const durationMs = wakeTime - bedTime;
+        const durationHours = durationMs / (1000 * 60 * 60);
+
+        if (durationHours < 1 || durationHours > 20) {
+            alert('Sleep duration seems unrealistic (less than 1 hour or more than 20 hours). Please check the dates/times.');
+            return;
+        }
+        // --- End Validation ---
+
+
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalText = submitButton.innerHTML;
+        
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing Sleep...';
+
+        // 1. Prepare the JSON data payload
+        const payload = {
+            bed_time: bedTimeInput.value, // Send ISO string format
+            wake_time: wakeTimeInput.value,
+            sleep_quality: sleepQuality,
+            duration_hours: parseFloat(durationHours.toFixed(2))
+        };
+
+        // 2. Send the data to the Flask API endpoint
+        fetch('/api/analyze_sleep', { // NOTE: You need to define this route in your app.py
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // 3. Handle the JSON response from the Flask backend
+            displayResult(data);
+        })
+        .catch(error => {
+            console.error('Sleep analysis failed:', error);
+            alert(`Log submission failed: ${error.message}.`);
+        })
+        .finally(() => {
+            // Re-enable button
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalText;
+        });
+    });
+    
+    // --- Display Results Function ---
+    
+    function displayResult(data) {
+        let resultHtml = '';
+        
+        if (data.error) {
+            resultHtml = `
+                <h3>Analysis Error</h3>
+                <p style="color: #b91c1c;">${data.error}</p>
+            `;
+        } else {
+            // Assuming Flask returns 'duration_hours', 'stability_score', and 'message'
+            const duration = data.duration_hours || 'N/A';
+            const message = data.message || 'Data logged successfully.';
+            const score = data.stability_score || 'N/A';
+
+            let messageClass = '';
+            if (score <= 3) {
+                messageClass = 'sleep-warning'; // Low score, potential instability
+            } else if (score >= 8) {
+                messageClass = 'sleep-good'; // High score, good stability
+            }
+
+            resultHtml = `
+                <h3>Sleep Analysis Summary</h3>
+                <p>Total Duration: <strong>${duration} hours</strong></p>
+                <p>Quality Logged: <strong>${sleepQualityInput.value} / 5</strong></p>
+                <p>Circadian Stability Score: <strong>${score} / 10</strong></p>
+                <p class="${messageClass}">Message: ${message}</p>
+            `;
+        }
+
+        // Insert the results into the HTML page
+        let resultBox = document.querySelector('.sleep-analysis-box');
+        if (!resultBox) {
+            // If the box doesn't exist, create it below the form
+            resultBox = document.createElement('div');
+            resultBox.className = 'sleep-analysis-box';
+            form.parentNode.appendChild(resultBox); 
+        }
+        resultBox.innerHTML = resultHtml;
+    }
+
+});
+</script>
+</html>
