@@ -33,7 +33,7 @@ http://127.0.0.1:5000
 ---
 
 ## 📦 Project Structure
-
+```
 Bipolar-Disorder-Detection/
 │
 ├── app.py # Main Flask app
@@ -43,7 +43,7 @@ Bipolar-Disorder-Detection/
 ├── static/ # CSS, JS, images
 ├── requirements.txt # Python dependencies
 └── README.md
-
+```
 ---
 
 ## ⚠️ Note on Large Model File
