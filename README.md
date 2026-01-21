@@ -36,12 +36,12 @@ http://127.0.0.1:5000
 ```
 Bipolar-Disorder-Detection/
 │
-├── app.py # Main Flask app
-├── test_setup.py # Test configuration script
-├── models/ # Directory for ML/DL models
-├── templates/ # HTML templates
-├── static/ # CSS, JS, images
-├── requirements.txt # Python dependencies
+├── app.py              # Main Flask app
+├── test_setup.py       # Test configuration script
+├── models/             # Directory for ML/DL models
+├── templates/          # HTML templates
+├── static/             # CSS, JS, images
+├── requirements.txt    # Python dependencies
 └── README.md
 ```
 ---
