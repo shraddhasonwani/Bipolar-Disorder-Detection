@@ -19,15 +19,14 @@ This repository contains an AI-based system built with **Python**, **Flask**, an
 ## 🚀 Quick Start Guide
 
 ### 1️⃣ Install Dependencies
-```bash
 pip install -r requirements.txt
-2️⃣ Test Setup (IMPORTANT)
+###2️⃣ Test Setup (IMPORTANT)
 python test_setup.py
-3️⃣ Run the Flask App
+###3️⃣ Run the Flask App
 python app.py
-4️⃣ Open in Browser
+###4️⃣ Open in Browser
 http://127.0.0.1:5000
-📦 Project Structure
+##📦 Project Structure
 Bipolar-Disorder-Detection/
 │
 ├── app.py                  # Main Flask app
@@ -37,7 +36,7 @@ Bipolar-Disorder-Detection/
 ├── static/                 # CSS, JS, images
 ├── requirements.txt        # Python dependencies
 └── README.md
-⚠️ Note on Large Model File
+##⚠️ Note on Large Model File
 The main deep learning model models/best_fusion_transformer.pt is not included in this repository due to GitHub's file size limits (>100 MB).
 
 You can download it separately:
@@ -46,7 +45,7 @@ Download the model file
 
 After downloading, place it in the models/ folder to run the system.
 
-💻 Technologies Used
+##💻 Technologies Used
 Python 3.x
 
 Flask
@@ -57,5 +56,5 @@ scikit-learn, librosa (Audio processing)
 
 OpenCV (Video processing)
 
-📄 License
+##📄 License
 This project is open-source. You can freely use, modify, and share it.
